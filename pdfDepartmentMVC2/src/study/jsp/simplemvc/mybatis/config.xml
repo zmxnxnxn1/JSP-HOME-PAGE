@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<!-- Model 클래스의 별칭을 부여한다 -->
+		<typeAlias alias="Department" type="study.jsp.simplemvc.model.Department" />
+	</typeAliases>
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<!-- MySQL 접속 정보를 지정한다. -->
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://my5510.gabiadb.com/elzz?characterEncoding=UTF8" />
+				<property name="username" value="el2a" />
+				<property name="password" value="alsk145123" />
+				<property name="poolMaximumActiveConnections" value="20"/>
+        <property name="poolMaximumIdleConnections" value="20"/>
+        <property name="poolPingQuery" value="/* ping */ SELECT 1"/>
+        <property name="poolPingEnabled" value="true"/>
+        <property name="poolPingConnectionsNotUsedFor" value="10000"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	<mappers>
+		<!-- Impl 클래스를 대체할 Mapper XML의 경로를 지정한다. -->
+		<mapper resource="study/jsp/simplemvc/mapper/DepartmentMapper.xml" />
+	</mappers>
+	
+</configuration>
