@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 첨부파일 데이터 Mapper -->
+<mapper namespace="BBSFileMapper">
+
+	<resultMap id="file" type="BBSFile">
+		<result property="id" column="id" />
+		<result property="bbsDocumentId" column="bbs_document_id" />
+		<result property="fileDir" column="file_dir" />
+		<result property="fileName" column="file_name" />
+		<result property="fileSize" column="file_size" />
+		<result property="fileType" column="file_type" />
+		<result property="orginName" column="orgin_name" />
+		<result property="regDate" column="reg_date" />
+		<result property="editDate" column="edit_date" />
+	</resultMap>
+	
+	<!-- 글 쓰기 기능을 구현한다. -->
+	<insert id="doInsert" parameterType="BBSFile" useGeneratedKeys="true" 
+		keyProperty="id">
+		INSERT INTO pdfBoard_file (
+			bbs_document_id, file_dir, file_name, file_size,
+			file_type, orgin_name, reg_date, edit_date
+		) VALUES (
+			#{bbsDocumentId}, #{fileDir}, #{fileName}, #{fileSize},
+			#{fileType}, #{orginName}, now(), now()
+		);
+	</insert>
+	
+	<!-- 특정 게시물에 속한 파일의 목록을 조회한다. -->
+	<select id="getFileList" parameterType="int" resultMap="file">
+		SELECT id, bbs_document_id, file_dir, file_name, file_size, file_type, orgin_name, reg_date, edit_date
+		FROM pdfBoard_file
+		WHERE bbs_document_id=#{bbsDocumentId}
+	</select>
+	
+	<!--
+		특정 게시물의 파일 정보들을 삭제한다.
+	-->
+	<delete id="doDelete" parameterType="int">
+		DELETE FROM pdfBoard_file WHERE bbs_document_id=#{id};
+	</delete>
+	
+	<!--
+		특정 파일 정보를 삭제한다.
+	-->
+	<delete id="doDeleteItem" parameterType="int">
+		DELETE FROM pdfBoard_file WHERE id=#{id};
+	</delete>
+	
+</mapper>
+

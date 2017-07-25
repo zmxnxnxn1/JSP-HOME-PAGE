@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 이 XML의 구조대로 구현될 클래스의 이름 => Impl클래스를 대체한다. -->
+<mapper namespace="MemberMapper">
+
+	<!-- Beans 클래스의 객체이름(id)과 클래스이름(type)을 명시한다. -->
+	<resultMap id="result" type="Member">
+		<!-- Beans의 멤버변수(property)이름과 대상 테이블의 컬럼(column)을 연결한다. -->
+		<result property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="userPw" column="user_pw" />
+		<result property="userName" column="user_name" />
+		<result property="email" column="email" />
+		<result property="tel" column="tel" />
+		<result property="postcode" column="postcode" />
+		<result property="addr1" column="addr1" />
+		<result property="addr2" column="addr2" />
+		<result property="regDate" column="reg_date" />
+		<result property="editDate" column="edit_date" />
+	</resultMap>
+
+	<!-- 회원가입을 처리한다. -->
+	<insert id="doJoin" parameterType="Member" useGeneratedKeys="true" 
+		keyProperty="id">
+		INSERT INTO pdfBoard_member (
+			user_id, user_pw, user_name, email, tel, 
+			postcode, addr1, addr2, reg_date, edit_date
+		) VALUES (
+			#{userId}, password(#{userPw}), #{userName}, #{email}, #{tel}, 
+			#{postcode}, #{addr1}, #{addr2}, now(), now()
+		);
+	</insert>
+	
+	<!-- 아이디 중복검사를 수행한다 -->
+	<select id="getUserIdCount" parameterType="String" resultType="int">
+		SELECT count(id) FROM pdfBoard_member WHERE user_id=#{user_id}
+	</select>
+	
+	<!-- 이메일 중복검사를 수행한다 -->
+	<select id="getEmailCount" parameterType="String" resultType="int">
+		SELECT count(id) FROM pdfBoard_member WHERE email=#{email}
+	</select>
+	
+	<!-- 로그인을 처리한다 -->
+	<select id="doLogin" parameterType="Member" resultMap="result">
+		SELECT id, user_id, user_pw, user_name, email, tel, postcode, addr1, addr2, reg_date, edit_date
+		FROM pdfBoard_member
+		WHERE user_id=#{userId} and user_pw=password(#{userPw});
+	</select>
+	
+	<!--
+		탈퇴를 처리한다.
+	-->
+	<delete id="doOut" parameterType="int">
+		DELETE FROM pdfBoard_member WHERE id=#{id};
+	</delete>
+	
+	<!--
+		이메일 주소에 의해서 비밀번호를 변경한다.
+	-->
+	<update id="changePasswordByEmail" parameterType="Member">
+		UPDATE pdfBoard_member SET user_pw=password(#{userPw}), edit_date=now() 
+		WHERE email=#{email};
+	</update>
+	
+	<!--
+		일련번호에 의해서 회원 정보를 조회한다.
+	-->
+	<select id="getInfo" parameterType="int" resultMap="result">
+		SELECT id, user_id, user_pw, user_name, email, tel, postcode, addr1, addr2, reg_date, edit_date
+		FROM pdfBoard_member
+		WHERE id=#{id};
+	</select>
+	
+	<!--
+		회원정보를 수정한다.
+		회원의 일련번호와 입력한 비밀번호가 동일한 데이터를 수정한다.
+		수정 결과 수가 0이라면 WHERE조건에 의하셔 비밀번호 입력이 잘못된 경우이다.
+	-->
+	<update id="doEdit" parameterType="Member">
+		UPDATE pdfBoard_member SET 
+			user_name=#{userName},
+			email=#{email},
+			tel=#{tel},
+			postcode=#{postcode},
+			addr1=#{addr1},
+			addr2=#{addr2},
+			edit_date=now()
+			
+			<!-- 신규 비밀번호가 null이 아니라면 SQL구문에 비번변경부분 추가 -->
+			<if test="newUserPw != null">
+			    ,user_pw = password(#{newUserPw})
+			</if> 
+			
+		WHERE id=#{id} AND user_pw=password(#{userPw});
+	</update>
+</mapper>
+

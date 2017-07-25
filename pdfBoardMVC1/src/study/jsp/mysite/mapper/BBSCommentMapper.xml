@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 덧글 데이터 Mapper -->
+<mapper namespace="BBSCommentMapper">
+
+	<resultMap id="comment" type="BBSComment">
+		<result property="id" column="id" />
+		<result property="bbsDocumentId" column="bbs_document_id" />
+		<result property="memberId" column="member_id" />
+		<result property="writerName" column="writer_name" />
+		<result property="writerPw" column="writer_pw" />
+		<result property="email" column="email" />
+		<result property="content" column="content" />
+		<result property="ipAddress" column="ip_address" />
+		<result property="regDate" column="reg_date" />
+		<result property="editDate" column="edit_date" />
+	</resultMap>
+	
+	<!-- 덧글 쓰기 기능을 구현한다. -->
+	<insert id="doWrite" parameterType="BBSComment" useGeneratedKeys="true" 
+		keyProperty="id">
+		INSERT INTO pdfBoard_comment (
+			bbs_document_id, member_id, writer_pw, writer_name, email, 
+			content, ip_address, reg_date, edit_date
+		) VALUES (
+			#{bbsDocumentId},
+
+			<choose>
+    			<when test="memberId == 0">
+					null, password(#{writerPw}),
+				</when>
+				<otherwise>
+					#{memberId}, #{writerPw},
+				</otherwise>
+			</choose> 
+			
+			#{writerName}, #{email}, #{content}, #{ipAddress}, now(), now()
+		);
+	</insert>
+	
+	<!-- 덧글 하나를 읽는다. -->
+	<select id="getCommentItem" parameterType="int" resultMap="comment">
+		 <!-- 비밀번호를 사용하지 않으므로, 생략한다. -->
+		 SELECT id, bbs_document_id, member_id, writer_name, email, 
+		 		content, ip_address, reg_date, edit_date
+		 FROM pdfBoard_comment
+		 WHERE id=#{id} 
+	</select>
+	
+	<!-- 덧글 목록 조회 -->
+	<select id="getCommentList" parameterType="BBSComment" resultMap="comment">
+		 SELECT id, bbs_document_id, member_id, writer_name, email, 
+		 		content, ip_address, reg_date, edit_date
+		 FROM pdfBoard_comment
+		 WHERE bbs_document_id=#{bbsDocumentId}
+		 ORDER BY id DESC
+	</select>
+	
+	<!-- 덧글의 비밀번호를 체크한다. -->
+	<select id="checkPassword" parameterType="BBSComment" resultType="int">
+		SELECT count(id) FROM pdfBoard_comment
+		WHERE id=#{id} AND writer_pw=password(#{writerPw})
+	</select>
+	
+	<!-- 덧글을 삭제한다. -->
+	<delete id="doDelete" parameterType="int">
+		DELETE FROM pdfBoard_comment WHERE id=#{id}
+	</delete>
+	
+	<!-- 덧글을 수정한다. 일련번호가 일치하는 항목을 update -->
+	<update id="doEdit" parameterType="BBSComment">
+		UPDATE pdfBoard_comment SET 
+			writer_name=#{writerName},
+			email=#{email},
+			content=#{content},
+			ip_address=#{ipAddress},
+			edit_date=now()
+		WHERE id=#{id}
+	</update>
+	
+	<!-- 특정 게시물에 소속된 덧글을 일괄적으로 삭제한다. -->
+	<delete id="doDeleteAll" parameterType="int">
+		DELETE FROM pdfBoard_comment WHERE bbs_document_id=#{bbsDocumentId}
+	</delete>
+	
+	<!-- 특정 회원이 작성한 덧글에 대하여 일괄적으로 회원번호를 null로 변경한다. -->
+	<update id="outMember" parameterType="int">
+		UPDATE pdfBoard_comment SET member_id = null
+		WHERE member_id=#{memberId}
+	</update>
+	
+</mapper>
+

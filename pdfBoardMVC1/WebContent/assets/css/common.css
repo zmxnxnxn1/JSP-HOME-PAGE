@@ -1,0 +1,55 @@
+body {
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+.carousel {
+	height: 500px;
+	margin-bottom: 60px;
+}
+
+.carousel-inner>.item>img {
+	min-width: 100%;
+	height: 500px;
+}
+
+.carousel-inner .carousel-caption {
+	padding-left: 30px;
+	padding-right: 30px;
+	background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/** 캐러셀의 반응형 기능 */
+@media ( min-width : 768px) {
+	.carousel-caption p {
+		margin-bottom: 20px;
+		font-size: 21px;
+		line-height: 1.4;
+	}
+}
+
+@media ( max-width : 767px) {
+	.carousel {
+		height: 320px;
+		margin-bottom: 30px;
+	}
+
+	.carousel-inner>.item>img {
+		height: 320px;
+	}
+	
+	.carousel h1 {
+		font-size: 20px;
+	}
+	
+	.carousel p {
+		font-size: 16px;
+	}
+}
+
+/** 글 목록 말줄임 처리 */
+.list-group-item {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
