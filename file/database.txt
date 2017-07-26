@@ -1,0 +1,107 @@
+CREATE TABLE `pdfBoard_comment` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`bbs_document_id` INT(11) NOT NULL,
+	`member_id` INT(11) NULL DEFAULT NULL,
+	`writer_name` VARCHAR(50) NOT NULL,
+	`writer_pw` VARCHAR(150) NOT NULL,
+	`email` VARCHAR(150) NOT NULL,
+	`content` TEXT NOT NULL,
+	`ip_address` VARCHAR(20) NOT NULL,
+	`reg_date` DATETIME NOT NULL,
+	`edit_date` DATETIME NOT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `bbs_document_id` (`bbs_document_id`),
+	INDEX `member_id` (`member_id`)
+)
+COLLATE='euckr_korean_ci'
+ENGINE=MyISAM
+AUTO_INCREMENT=11
+;
+
+
+CREATE TABLE `pdfBoard_document` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`bbs_type` VARCHAR(30) NOT NULL DEFAULT 'free',
+	`member_id` INT(11) NULL DEFAULT NULL,
+	`writer_name` VARCHAR(50) NOT NULL,
+	`writer_pw` VARCHAR(150) NOT NULL,
+	`email` VARCHAR(150) NOT NULL,
+	`subject` VARCHAR(255) NOT NULL,
+	`content` TEXT NOT NULL,
+	`ip_address` VARCHAR(20) NOT NULL,
+	`hit` INT(11) NOT NULL,
+	`reg_date` DATETIME NOT NULL,
+	`edit_date` DATETIME NOT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `member_id` (`member_id`)
+)
+COLLATE='euckr_korean_ci'
+ENGINE=MyISAM
+AUTO_INCREMENT=50
+;
+
+
+CREATE TABLE `pdfBoard_file` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`bbs_document_id` INT(11) NOT NULL,
+	`file_dir` VARCHAR(255) NOT NULL,
+	`file_name` VARCHAR(255) NOT NULL,
+	`file_size` INT(11) NOT NULL,
+	`file_type` VARCHAR(50) NOT NULL,
+	`orgin_name` VARCHAR(255) NOT NULL,
+	`reg_date` DATETIME NOT NULL,
+	`edit_date` DATETIME NOT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `bbs_document_id` (`bbs_document_id`)
+)
+COLLATE='euckr_korean_ci'
+ENGINE=MyISAM
+AUTO_INCREMENT=22
+;
+
+
+CREATE TABLE `pdfBoard_member` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`user_id` VARCHAR(30) NOT NULL,
+	`user_pw` VARCHAR(150) NOT NULL,
+	`user_name` VARCHAR(50) NOT NULL,
+	`email` VARCHAR(150) NOT NULL,
+	`tel` VARCHAR(20) NOT NULL,
+	`postcode` VARCHAR(10) NULL DEFAULT NULL,
+	`addr1` VARCHAR(150) NULL DEFAULT NULL,
+	`addr2` VARCHAR(150) NULL DEFAULT NULL,
+	`reg_date` DATETIME NOT NULL,
+	`edit_date` DATETIME NOT NULL,
+	PRIMARY KEY (`id`)
+)
+COLLATE='euckr_korean_ci'
+ENGINE=MyISAM
+AUTO_INCREMENT=11
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE `pdfBoard_department` (
+	`deptno` INT(4) NOT NULL AUTO_INCREMENT COMMENT '부서번호(학과번호)',
+	`dname` VARCHAR(16) NOT NULL COMMENT '부서명(학과명)',
+	`loc` VARCHAR(10) NULL DEFAULT NULL COMMENT '위치',
+	PRIMARY KEY (`deptno`)
+)
+COMMENT='부서(학과) '
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=317
+;
